@@ -4,7 +4,9 @@
   window.portfolioIntroReady=new Promise(resolve=>{resolveReady=resolve;});
   const canvas=document.getElementById('intro-orbit');
   const ctx=canvas.getContext('2d');
-  if(!ctx){
+  const foregroundCanvas=document.getElementById('intro-orbit-front');
+  const foreground=foregroundCanvas.getContext('2d');
+  if(!ctx||!foreground){
     const fallback=document.createElement('div');
     fallback.textContent='ds';
     fallback.setAttribute('aria-label','Deepak Sharma');
@@ -44,9 +46,10 @@
     return{x:width*.5+xx*scale*perspective,y:height*.5+yy*scale*perspective,z:depth,p:perspective};
   }
   function paint(){
-    const progress=moving()?Number(stage.style.getPropertyValue('--intro-progress'))||0:0;
+    const progress=moving()?Number(stage.style.getPropertyValue('--orbit-travel'))||0:0;
     const rotation=angle+progress*1.5;
     ctx.clearRect(0,0,width,height);
+    foreground.clearRect(0,0,width,height);
     const unit=Math.min(width,height);
     const aura=ctx.createRadialGradient(width/2,height/2,0,width/2,height/2,unit*.49);
     aura.addColorStop(0,'rgba(132,48,233,.19)');
@@ -59,15 +62,16 @@
       for(let i=1;i<points.length;i++)segments.push({a:points[i-1],b:points[i],z:(points[i-1].z+points[i].z)/2,ring:index});
     });
     segments.sort((a,b)=>a.z-b.z);
-    ctx.lineCap='round';
+    ctx.lineCap='round';foreground.lineCap='round';
     for(const segment of segments){
+      const layer=segment.z>=0?foreground:ctx;
       const light=Math.max(0,Math.min(1,(segment.z+1.9)/3.8));
       const hue=262+segment.ring*3;
-      ctx.beginPath();ctx.moveTo(segment.a.x,segment.a.y);ctx.lineTo(segment.b.x,segment.b.y);
-      ctx.strokeStyle='hsla('+hue+',88%,'+(39+light*41)+'%,'+(.15+light*.8)+')';
-      ctx.lineWidth=(1.1+light*2.6)*Math.min(1.2,unit/570);
-      ctx.stroke();
-      if(light>.73){ctx.strokeStyle='rgba(240,218,255,'+((light-.73)*2.4)+')';ctx.lineWidth=.7;ctx.stroke();}
+      layer.beginPath();layer.moveTo(segment.a.x,segment.a.y);layer.lineTo(segment.b.x,segment.b.y);
+      layer.strokeStyle='hsla('+hue+',88%,'+(39+light*41)+'%,'+(.15+light*.8)+')';
+      layer.lineWidth=(1.1+light*2.6)*Math.min(1.2,unit/570);
+      layer.stroke();
+      if(light>.73){layer.strokeStyle='rgba(240,218,255,'+((light-.73)*2.4)+')';layer.lineWidth=.7;layer.stroke();}
     }
     const core=ctx.createRadialGradient(width/2-unit*.018,height/2-unit*.024,0,width/2,height/2,unit*.058);
     core.addColorStop(0,'rgba(249,228,255,.95)');
@@ -78,8 +82,9 @@
     for(let i=0;i<particles.length;i++){
       const point=project(particles[i],rotation*.55);
       const alpha=.14+Math.max(0,(point.z+2.5)/5)*.48;
-      ctx.fillStyle='rgba(211,174,250,'+alpha+')';
-      ctx.beginPath();ctx.arc(point.x,point.y,(i%11===0?1.6:.7)*point.p,0,Math.PI*2);ctx.fill();
+      const layer=point.z>=0?foreground:ctx;
+      layer.fillStyle='rgba(211,174,250,'+alpha+')';
+      layer.beginPath();layer.arc(point.x,point.y,(i%11===0?1.6:.7)*point.p,0,Math.PI*2);layer.fill();
     }
   }
   function frame(now){
@@ -100,7 +105,8 @@
     width=Math.max(1,rect.width);height=Math.max(1,rect.height);
     const dpr=Math.min(window.devicePixelRatio||1,2);
     canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);paint();
+    foregroundCanvas.width=canvas.width;foregroundCanvas.height=canvas.height;
+    ctx.setTransform(dpr,0,0,dpr,0,0);foreground.setTransform(dpr,0,0,dpr,0,0);paint();
   }
   window.addEventListener('resize',resize);
   window.addEventListener('scroll',schedule,{passive:true});

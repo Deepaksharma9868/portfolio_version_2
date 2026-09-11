@@ -4,6 +4,7 @@
   const loader=document.getElementById('opening-loader');
   const content=document.getElementById('portfolio-content');
   const opening=document.getElementById('welcome');
+  const landing=document.getElementById('home');
   const stage=opening.querySelector('.intro-sticky');
   const introMotion=document.getElementById('intro-motion');
   const mainMotion=document.getElementById('motion');
@@ -14,7 +15,7 @@
   let settled=0,finished=false,framePending=false;
   let safetyTimer,completionTimer,hideTimer;
   const started=performance.now();
-  const preparationCount=2;
+  const preparationCount=4;
   const canMove=()=>!reduce.matches&&!root.classList.contains('motion-paused');
   function syncMotion(){
     const stopped=!canMove();
@@ -79,7 +80,8 @@
     root.classList.add('intro-loading');
     content.inert=true;
     document.getElementById('loader-skip').focus({preventScroll:true});
-    const tasks=[window.portfolioIntroReady||Promise.resolve(),document.fonts?document.fonts.ready:Promise.resolve()];
+    const handTasks=Array.from(opening.querySelectorAll('.intro-hand img')).map(image=>typeof image.decode==='function'?image.decode():Promise.resolve());
+    const tasks=[window.portfolioIntroReady||Promise.resolve(),document.fonts?document.fonts.ready:Promise.resolve(),...handTasks];
     safetyTimer=setTimeout(()=>finish(false),4500);
     Promise.allSettled(tasks.map(task=>Promise.resolve(task).then(preparationSettled,preparationSettled))).then(()=>finish(false));
   }
@@ -92,21 +94,41 @@
     stage.style.setProperty('--intro-progress',position.toFixed(4));
     const p=canMove()?position:0;
     const departure=canMove()?clamp((-rect.top-distance)/window.innerHeight,0,1):0;
+    const approach=clamp(p/.72,0,1);
+    const reach=approach*approach*(3-2*approach);
     const vars={
-      '--showcase-x':(-65*p)+'px',
-      '--showcase-y':(-85*p)+'px',
-      '--showcase-scale':String(1+p*.35),
+      '--orbit-travel':String(p+departure*.65),
+      '--human-x':(-28*(1-reach)-48*departure)+'px',
+      '--human-y':(32*(1-reach)+28*departure)+'px',
+      '--human-rotate':(-5*(1-reach)-6*departure)+'deg',
+      '--robot-x':(30*(1-reach)+48*departure)+'px',
+      '--robot-y':(-32*(1-reach)-28*departure)+'px',
+      '--robot-rotate':(5*(1-reach)+6*departure)+'deg',
+      '--hand-opacity':String(1-departure*.85),
+      '--showcase-x':(-25*p)+'px',
+      '--showcase-y':(-45*p)+'px',
+      '--showcase-scale':String(1+p*.15),
       '--copy-y':(-60*p)+'px',
       '--copy-opacity':String(1-clamp((p-.25)/.6,0,.8)),
       '--scene-opacity':String(1-clamp(departure/.85,0,1)),
       '--glow-y':(-100*p)+'px'
     };
     for(const [name,value] of Object.entries(vars))stage.style.setProperty(name,value);
+    const arrival=canMove()&&!linkedSection?clamp((window.innerHeight-landing.getBoundingClientRect().top)/(window.innerHeight*.85),0,1):1;
+    for(const [part,delay,shift] of [['eyebrow',0,22],['title',.08,55],['role',.2,38],['body',.3,35],['art',.12,55]]){
+      const t=clamp((arrival-delay)/(1-delay),0,1);
+      const shown=t*t*(3-2*t);
+      landing.style.setProperty('--landing-'+part,String(shown));
+      landing.style.setProperty('--landing-'+part+'-y',((1-shown)*shift)+'px');
+      if(part==='art')landing.style.setProperty('--landing-art-scale',String(.94+.06*shown));
+    }
   }
   function queueScroll(){if(!framePending){framePending=true;requestAnimationFrame(renderScroll);}}
   window.addEventListener('scroll',queueScroll,{passive:true});
   window.addEventListener('resize',queueScroll);
+  document.addEventListener('focusin',queueScroll);
   window.addEventListener('pageshow',event=>{if(event.persisted)finish(false);});
   reduce.addEventListener('change',()=>{if(reduce.matches&&!finished)finish(false);syncMotion();});
+  root.classList.add('landing-reveal-ready');
   syncMotion();
 })();
