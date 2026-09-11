@@ -15,7 +15,7 @@
   let settled=0,finished=false,framePending=false;
   let safetyTimer,completionTimer,hideTimer;
   const started=performance.now();
-  const preparationCount=4;
+  const preparationCount=2;
   const canMove=()=>!reduce.matches&&!root.classList.contains('motion-paused');
   function syncMotion(){
     const stopped=!canMove();
@@ -80,8 +80,7 @@
     root.classList.add('intro-loading');
     content.inert=true;
     document.getElementById('loader-skip').focus({preventScroll:true});
-    const handTasks=Array.from(opening.querySelectorAll('.intro-hand img')).map(image=>typeof image.decode==='function'?image.decode():Promise.resolve());
-    const tasks=[window.portfolioIntroReady||Promise.resolve(),document.fonts?document.fonts.ready:Promise.resolve(),...handTasks];
+    const tasks=[window.portfolioIntroReady||Promise.resolve(),document.fonts?document.fonts.ready:Promise.resolve()];
     safetyTimer=setTimeout(()=>finish(false),4500);
     Promise.allSettled(tasks.map(task=>Promise.resolve(task).then(preparationSettled,preparationSettled))).then(()=>finish(false));
   }
@@ -94,17 +93,8 @@
     stage.style.setProperty('--intro-progress',position.toFixed(4));
     const p=canMove()?position:0;
     const departure=canMove()?clamp((-rect.top-distance)/window.innerHeight,0,1):0;
-    const approach=clamp(p/.72,0,1);
-    const reach=approach*approach*(3-2*approach);
     const vars={
       '--orbit-travel':String(p+departure*.65),
-      '--human-x':(-28*(1-reach)-48*departure)+'px',
-      '--human-y':(32*(1-reach)+28*departure)+'px',
-      '--human-rotate':(-5*(1-reach)-6*departure)+'deg',
-      '--robot-x':(30*(1-reach)+48*departure)+'px',
-      '--robot-y':(-32*(1-reach)-28*departure)+'px',
-      '--robot-rotate':(5*(1-reach)+6*departure)+'deg',
-      '--hand-opacity':String(1-departure*.85),
       '--showcase-x':(-25*p)+'px',
       '--showcase-y':(-45*p)+'px',
       '--showcase-scale':String(1+p*.15),

@@ -17,7 +17,7 @@
   const stage=canvas.closest('.intro-sticky');
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
   let width=1,height=1,angle=.35,last=0,frameId=0,visible=true;
-  const rings=[],particles=[];
+  const rings=[],ribbonEdges=[],particles=[];
   for(let ring=0;ring<7;ring++){
     const radius=1.48+ring*.055,tilt=.22+ring*.42,turn=ring*Math.PI/7;
     const points=[];
@@ -28,6 +28,13 @@
       points.push([x*Math.cos(turn)+zz*Math.sin(turn),yy,-x*Math.sin(turn)+zz*Math.cos(turn)]);
     }
     rings.push(points);
+    // Closed loops: both ribbon edges meet exactly, leaving no exposed ends.
+    ribbonEdges.push(points.map((point,index)=>{
+      const t=index/180*Math.PI*2;
+      const halfWidth=(ring%3===0?.105:.015)*(1+.28*Math.sin(t*3+ring));
+      const length=Math.hypot(...point);
+      return [-1,1].map(side=>point.map(value=>value*(1+side*halfWidth/length)));
+    }));
   }
   for(let i=0;i<110;i++){
     const t=i*2.39996323;
@@ -42,7 +49,7 @@
     const xx=x*Math.cos(a)+z*Math.sin(a),zz=-x*Math.sin(a)+z*Math.cos(a);
     const yy=y*Math.cos(b)-zz*Math.sin(b),depth=y*Math.sin(b)+zz*Math.cos(b);
     const perspective=5.5/(5.5-depth);
-    const scale=Math.min(width,height)*.205;
+    const scale=Math.min(width,height)*.16;
     return{x:width*.5+xx*scale*perspective,y:height*.5+yy*scale*perspective,z:depth,p:perspective};
   }
   function paint(){
@@ -59,7 +66,11 @@
     const segments=[];
     rings.forEach((ring,index)=>{
       const points=ring.map(point=>project(point,rotation));
-      for(let i=1;i<points.length;i++)segments.push({a:points[i-1],b:points[i],z:(points[i-1].z+points[i].z)/2,ring:index});
+      const edges=ribbonEdges[index].map(pair=>pair.map(point=>project(point,rotation)));
+      for(let i=1;i<points.length;i++)segments.push({
+        a:points[i-1],b:points[i],z:(points[i-1].z+points[i].z)/2,ring:index,
+        corners:[edges[i-1][0],edges[i][0],edges[i][1],edges[i-1][1]]
+      });
     });
     segments.sort((a,b)=>a.z-b.z);
     ctx.lineCap='round';foreground.lineCap='round';
@@ -67,6 +78,20 @@
       const layer=segment.z>=0?foreground:ctx;
       const light=Math.max(0,Math.min(1,(segment.z+1.9)/3.8));
       const hue=262+segment.ring*3;
+      if(segment.ring%3===0){
+        const [a,b,c,d]=segment.corners;
+        const sheen=.5+.5*Math.sin(segment.a.x/unit*8+segment.ring);
+        const gradient=layer.createLinearGradient(a.x,a.y,d.x,d.y);
+        gradient.addColorStop(0,'hsla('+hue+',85%,'+(28+light*20)+'%,.92)');
+        gradient.addColorStop(.48,'hsla('+(hue+9)+',85%,'+(48+light*34+sheen*7)+'%,.96)');
+        gradient.addColorStop(1,'hsla('+hue+',80%,'+(25+light*26)+'%,.9)');
+        layer.fillStyle=gradient;layer.beginPath();layer.moveTo(a.x,a.y);
+        layer.lineTo(b.x,b.y);layer.lineTo(c.x,c.y);layer.lineTo(d.x,d.y);
+        layer.closePath();layer.fill();
+        layer.strokeStyle='rgba(239,212,255,'+(.12+light*.48)+')';
+        layer.lineWidth=.65;layer.beginPath();layer.moveTo(d.x,d.y);layer.lineTo(c.x,c.y);layer.stroke();
+        continue;
+      }
       layer.beginPath();layer.moveTo(segment.a.x,segment.a.y);layer.lineTo(segment.b.x,segment.b.y);
       layer.strokeStyle='hsla('+hue+',88%,'+(39+light*41)+'%,'+(.15+light*.8)+')';
       layer.lineWidth=(1.1+light*2.6)*Math.min(1.2,unit/570);
