@@ -14,7 +14,7 @@
   let settled=0,finished=false,framePending=false;
   let safetyTimer,completionTimer,hideTimer;
   const started=performance.now();
-  const preparationCount=3;
+  const preparationCount=2;
   const canMove=()=>!reduce.matches&&!root.classList.contains('motion-paused');
   function syncMotion(){
     const stopped=!canMove();
@@ -79,9 +79,7 @@
     root.classList.add('intro-loading');
     content.inert=true;
     document.getElementById('loader-skip').focus({preventScroll:true});
-    const images=Array.from(opening.querySelectorAll('img'));
-    const tasks=images.map(image=>typeof image.decode==='function'?image.decode():Promise.resolve());
-    tasks.push(document.fonts?document.fonts.ready:Promise.resolve());
+    const tasks=[window.portfolioIntroReady||Promise.resolve(),document.fonts?document.fonts.ready:Promise.resolve()];
     safetyTimer=setTimeout(()=>finish(false),4500);
     Promise.allSettled(tasks.map(task=>Promise.resolve(task).then(preparationSettled,preparationSettled))).then(()=>finish(false));
   }
@@ -98,10 +96,6 @@
       '--showcase-x':(-65*p)+'px',
       '--showcase-y':(-85*p)+'px',
       '--showcase-scale':String(1+p*.35),
-      '--front-rx':(8-16*p)+'deg',
-      '--front-ry':(-20+32*p)+'deg',
-      '--front-rz':(12-20*p)+'deg',
-      '--back-rz':(-12+17*p)+'deg',
       '--copy-y':(-60*p)+'px',
       '--copy-opacity':String(1-clamp((p-.25)/.6,0,.8)),
       '--scene-opacity':String(1-clamp(departure/.85,0,1)),
