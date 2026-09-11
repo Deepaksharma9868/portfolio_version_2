@@ -30,18 +30,3 @@ function updateNavigation(){
 }
 window.addEventListener('scroll',()=>{if(!scrollQueued){scrollQueued=true;requestAnimationFrame(updateNavigation);}},{passive:true});
 updateNavigation();
-const revealAnimations=new Set();
-if('IntersectionObserver' in window){
-  const reveals=new IntersectionObserver(entries=>{
-    for(const entry of entries){
-      if(!entry.isIntersecting)continue;
-      reveals.unobserve(entry.target);
-      if(paused||reduced.matches||typeof entry.target.animate!=='function')continue;
-      const animation=entry.target.animate([{opacity:.35,transform:'translateY(26px)'},{opacity:1,transform:'translateY(0)'}],{duration:650,easing:'cubic-bezier(.2,.7,.2,1)',fill:'none'});
-      revealAnimations.add(animation);
-      animation.onfinish=()=>revealAnimations.delete(animation);
-    }
-  },{threshold:.08,rootMargin:'0px 0px -24px 0px'});
-  document.querySelectorAll('.section-title,.group-heading,.gallery-card,.experience-row,.tool-list > div,.contact h2').forEach(element=>reveals.observe(element));
-}
-document.addEventListener('portfolio:motion',()=>{if(paused||reduced.matches){for(const animation of revealAnimations)animation.cancel();revealAnimations.clear();}});
