@@ -4,7 +4,7 @@ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
 let paused=reduced.matches,angle=.4,width=0,height=0,last=0,raf=0,hoverX=0,hoverY=0,targetX=0,targetY=0;
 const points=[];
 for(let i=0;i<240;i++){const t=i/240*Math.PI*2;const center=s=>[(2+Math.cos(3*s))*.68*Math.cos(2*s),(2+Math.cos(3*s))*.68*Math.sin(2*s),Math.sin(3*s)*.68];const c=center(t),n=center(t+.001);let tangent=n.map((v,k)=>v-c[k]);const len=Math.hypot(...tangent);tangent=tangent.map(v=>v/len);let normal=[-tangent[1],tangent[0],0];const nl=Math.hypot(...normal);normal=normal.map(v=>v/nl);const bin=[tangent[1]*normal[2]-tangent[2]*normal[1],tangent[2]*normal[0]-tangent[0]*normal[2],tangent[0]*normal[1]-tangent[1]*normal[0]];for(let j=0;j<22;j++){const s=j/22*Math.PI*2;points.push(c.map((v,k)=>v+.3*(Math.cos(s)*normal[k]+Math.sin(s)*bin[k])));}}
-function label(){motion.innerHTML=paused?'Play animation <span>▷</span>':'Pause animation <span>Ⅱ</span>';motion.setAttribute('aria-pressed',String(paused));}
+function label(){motion.innerHTML=paused?'Resume motion <span>&#9655;</span>':'Pause motion <span>II</span>';motion.setAttribute('aria-pressed',String(paused));document.documentElement.classList.toggle('motion-paused',paused);document.dispatchEvent(new Event('portfolio:motion'));}
 function resize(){const r=canvas.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);draw();}
 function draw(){ctx.clearRect(0,0,width,height);const size=Math.min(width,height)*.174;const a=angle+hoverX,b=.62+hoverY;const ca=Math.cos(a),sa=Math.sin(a),cb=Math.cos(b),sb=Math.sin(b);const projected=points.map(([x,y,z])=>{const x1=x*ca-z*sa,z1=x*sa+z*ca,y1=y*cb-z1*sb,z2=y*sb+z1*cb;const perspective=6/(6-z2);return{x:width/2+x1*size*perspective,y:height/2+y1*size*perspective,z:z2,p:perspective};}).sort((p,q)=>p.z-q.z);
 const glow=ctx.createRadialGradient(width/2,height/2,0,width/2,height/2,size*2.9);glow.addColorStop(0,'rgba(160,80,245,.09)');glow.addColorStop(1,'rgba(160,80,245,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,width,height);
@@ -16,3 +16,32 @@ canvas.addEventListener('pointerleave',()=>{targetX=0;targetY=0;});
 reduced.addEventListener('change',e=>{paused=e.matches;label();draw();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);last=0;}else{raf=requestAnimationFrame(frame);}});
 window.addEventListener('resize',resize);label();resize();raf=requestAnimationFrame(frame);
+// Lightweight scroll choreography; content stays visible without JavaScript.
+const pageHeader=document.querySelector('header');
+const pageLinks=Array.from(document.querySelectorAll('header nav a'));
+const pageSections=Array.from(document.querySelectorAll('main > section[id]'));
+let scrollQueued=false;
+function updateNavigation(){
+  pageHeader.classList.toggle('is-scrolled',window.scrollY>30);
+  let active='home';
+  for(const section of pageSections){if(section.getBoundingClientRect().top<=180)active=section.id;}
+  for(const link of pageLinks){if(link.getAttribute('href')==='#'+active)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');}
+  scrollQueued=false;
+}
+window.addEventListener('scroll',()=>{if(!scrollQueued){scrollQueued=true;requestAnimationFrame(updateNavigation);}},{passive:true});
+updateNavigation();
+const revealAnimations=new Set();
+if('IntersectionObserver' in window){
+  const reveals=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting)continue;
+      reveals.unobserve(entry.target);
+      if(paused||reduced.matches||typeof entry.target.animate!=='function')continue;
+      const animation=entry.target.animate([{opacity:.35,transform:'translateY(26px)'},{opacity:1,transform:'translateY(0)'}],{duration:650,easing:'cubic-bezier(.2,.7,.2,1)',fill:'none'});
+      revealAnimations.add(animation);
+      animation.onfinish=()=>revealAnimations.delete(animation);
+    }
+  },{threshold:.08,rootMargin:'0px 0px -24px 0px'});
+  document.querySelectorAll('.section-title,.group-heading,.gallery-card,.experience-row,.tool-list > div,.contact h2').forEach(element=>reveals.observe(element));
+}
+document.addEventListener('portfolio:motion',()=>{if(paused||reduced.matches){for(const animation of revealAnimations)animation.cancel();revealAnimations.clear();}});
