@@ -118,3 +118,57 @@ html{scrollbar-gutter:stable}html.intro-loading{overflow:hidden}.opening-loader[
 @media(max-width:1000px){.contact-portrait .contact-face{right:-2%;width:63%;top:85px}.face-tools{right:1%;width:55%;top:645px}}
 @media(max-width:650px){.contact-portrait .contact-face{width:100%;right:0;top:83px;height:400px}.face-tools{position:relative;top:auto;right:auto;width:100%;margin-top:400px}.contact-portrait .contact-copy{margin-top:45px}.contact-portrait .contact-copy h2{font-size:clamp(84px,22vw,118px)}.contact-portrait{padding-top:32px}.face-credit{font-size:10px!important}.face-fallback .contact-copy{margin-top:380px}}
 @media(prefers-reduced-motion:reduce){#about>.about-visual-column,#about>.about-content,.contact-portrait .contact-copy{opacity:1!important;transform:none!important}}
+
+/* Mobile access, readable content and uncluttered contact details. */
+.about-emblem{overflow:visible;perspective:none;max-width:410px}.about-emblem canvas{width:100%;height:100%;display:block}
+.footer-links{display:flex;gap:24px;align-items:center;flex-wrap:wrap}.footer-links a{min-height:44px;display:inline-flex;align-items:center;font-size:13px;color:#baa9cb}
+.skip-content{position:fixed;left:12px;top:12px;transform:translateY(-160%);z-index:2000;background:#d5adff;color:#190d2b;padding:14px 20px;border-radius:10px}.skip-content:focus{transform:none}
+main,section,.about-content,.contact-copy,.contact-details{min-width:0}
+.contact-copy:focus-within{opacity:1!important;transform:none!important}
+.credits-content{max-width:850px;margin:0 auto;padding:65px 6%;min-height:75svh}.credits-content h1{font-size:clamp(42px,7vw,72px);margin:25px 0 35px}.credits-content h2{font-size:26px;letter-spacing:-1px;margin:30px 0 15px}.credits-content p{font-size:16px;line-height:1.85;color:#c7bad2;margin:16px 0}.credits-content a{color:#d9b5ff;text-decoration:underline;text-underline-offset:4px}
+@media(max-width:850px){
+ .about{gap:28px}.about-emblem{width:min(100%,340px);margin:10px auto;max-width:100%}
+ .about-content{overflow-wrap:anywhere}.skills{gap:8px}.skills span{font-size:14px}
+ .section-motion,#intro-motion,.intro-skip{min-height:44px}
+}
+@media(max-width:650px){
+ html{scroll-padding-top:86px}header{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;padding:12px 5%}header.is-scrolled{padding:10px 5%}
+ header .logo{width:44px;height:42px}header nav{justify-content:flex-end;gap:clamp(8px,2.5vw,16px);flex-wrap:wrap;font-size:12px}header nav a{min-height:44px}header nav span{display:none}
+ section{padding-left:5%;padding-right:5%}
+ .hero{min-height:0;padding-top:34px;padding-bottom:42px}
+ .hero .eyebrow{font-size:10px;letter-spacing:1px;line-height:1.8;gap:8px}
+ .hero .name-heading{font-size:clamp(58px,17.8vw,104px);line-height:1.04;margin-top:24px;letter-spacing:-.06em}
+ .hero-role{font-size:16px;line-height:1.6;margin-top:20px}
+ .hero .sculpture{position:relative;top:auto;right:auto;width:100%;height:clamp(280px,87vw,450px);margin:12px 0 0}
+ .hero #motion{right:50%;bottom:0;transform:translateX(50%);white-space:nowrap;min-height:44px}
+ .hero-bottom{margin-top:24px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}.hero-bottom p{font-size:16px}
+ .hero-index{position:static;margin-top:35px;font-size:10px;letter-spacing:1px}
+ .scroll-intro{height:200svh}.intro-sticky{min-height:100svh;height:100svh}
+ .intro-scene{inset:90px 5% 76px;gap:14px}.intro-copy h2{font-size:clamp(42px,11vw,64px)}.intro-copy .eyebrow{font-size:10px;letter-spacing:1px}
+ .intro-abstract{width:min(100%,330px);height:min(42svh,330px);aspect-ratio:auto;flex:0 1 auto}
+ .intro-bottomline{left:5%;right:5%;font-size:10px}.intro-scroll-track{width:56px}
+ .work-heading h2{font-size:clamp(48px,13vw,72px)}.reel-filters button{font-size:12px;min-height:44px;padding:10px 13px}
+ .reel-position{flex-wrap:wrap;justify-content:flex-end}#reel-autoplay{min-height:44px;font-size:12px}
+ .reel-caption-top{gap:12px;align-items:flex-start}.reel-caption-title h3{font-size:26px}.reel-open{min-height:44px;font-size:14px;display:inline-flex;align-items:center}
+ #reel-description{font-size:16px}.reel-caption{min-height:0}.work-showcase{padding-bottom:50px}
+ .about-visual-column{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .about .about-visual-column>.eyebrow{font-size:10px;letter-spacing:.8px;line-height:1.8}
+ .about>div>p,.experience-description,.tool-list dd{font-size:16px}
+ .about h2{font-size:clamp(34px,8.5vw,52px)}.experience-row{padding:18px 16px;grid-template-columns:minmax(0,1fr)}.experience-row h4{overflow-wrap:anywhere}.tool-list{grid-template-columns:minmax(0,1fr)}
+ .contact-portrait{display:flex;flex-direction:column;min-height:0;padding-top:30px;padding-bottom:40px}
+ .contact-top{gap:10px;align-items:center;flex-wrap:wrap}.contact-top .eyebrow{max-width:170px;font-size:11px;letter-spacing:1px}
+ .contact-portrait .contact-face{position:relative;top:auto;right:auto;width:100%;height:clamp(310px,105vw,465px);margin:18px auto 0;flex-shrink:0}
+ .face-tools{position:relative;top:auto;right:auto;width:100%;margin:4px 0 0}
+ #face-help{font-size:13px;margin-bottom:12px}.face-controls{gap:7px}.face-controls button{min-width:44px;min-height:46px;padding:10px 13px}
+ .contact-portrait .contact-copy,.face-fallback .contact-copy{margin-top:38px}
+ .contact-portrait .contact-copy h2{font-size:clamp(78px,23vw,140px);line-height:.88}
+ .contact-invitation,.contact-summary{font-size:16px;line-height:1.7}
+ .contact-details{margin-top:35px;padding-top:25px;gap:24px;width:100%}
+ .contact-email{grid-template-columns:minmax(0,1fr) 44px;width:100%;gap:12px}.contact-email strong{font-size:16px;line-height:1.65;overflow-wrap:anywhere}
+ .contact-email b{width:44px;height:44px}.contact-details .social-links{flex-wrap:wrap;gap:12px}.contact-details .social-links a{font-size:14px;min-height:44px}
+ footer{padding:22px 5%;gap:12px;flex-wrap:wrap}footer p{font-size:10px;line-height:1.8}.footer-links{width:100%;justify-content:space-between}
+}
+@media(max-width:900px) and (max-height:550px){
+ .intro-scene{flex-direction:row;align-items:center;gap:20px}.intro-copy{width:50%}.intro-copy h2{font-size:44px}.intro-copy h2 br{display:block}.intro-copy h2 em{margin-left:0}.intro-abstract{width:48%;height:65svh}.intro-copy .eyebrow{font-size:9px}.intro-copy>p:last-child{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.scroll-intro{height:100svh}.intro-sticky{min-height:600px}}

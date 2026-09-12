@@ -12,13 +12,14 @@
   const smooth=math.smooth,clamp=math.clamp;
   function resize(){
     width=window.innerWidth;height=window.innerHeight;
-    const dpr=Math.min(window.devicePixelRatio||1,1.6);
+    const dpr=Math.min(window.devicePixelRatio||1,width<=650?1.25:1.6);
     canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);invalidate();
   }
   function invalidate(){if(!frameId&&mesh&&!document.hidden)frameId=requestAnimationFrame(render);}
   function render(now){
     frameId=0;
+    if(width<=650&&!noMotion()&&last&&now-last<32){invalidate();return;}
     const dt=last?Math.min((now-last)/1000,.05):0;last=now;
     if(!noMotion())time+=dt;
     const rect=target.getBoundingClientRect(),sectionRect=section.getBoundingClientRect();
@@ -80,7 +81,7 @@
         const facing=light[i],bucket=formation<.75?i%4:Math.min(3,Math.floor(clamp((facing+1)*.5)*4));
         if(bucket!==band)continue;
         // Sparse ambient field becomes the complete head as it assembles.
-        if(formation<.12&&i%3!==0)continue;
+        if(formation<.12&&i%(width<=650?6:3)!==0)continue;
         const x=projected[i*2],y=projected[i*2+1],radius=(.45+band*.2)*(formation>.8?.8:1);
         if(x< -5||x>width+5||y< -5||y>height+5)continue;
         ctx.moveTo(x+radius,y);ctx.arc(x,y,radius,0,Math.PI*2);
