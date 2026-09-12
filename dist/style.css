@@ -95,3 +95,26 @@ html{scrollbar-gutter:stable}html.intro-loading{overflow:hidden}.opening-loader[
 @media(max-width:850px){.about-visual-column{position:relative;top:0;display:grid;grid-template-columns:1fr auto;align-items:center}.about-emblem{grid-column:1/-1;grid-row:2;justify-self:center;width:min(90%,330px);margin:12px auto 0}.about-visual-column .section-motion{grid-column:2;grid-row:1}.contact-portrait{min-height:930px}.contact-face{width:83%;right:-10%;height:620px;top:65px}.contact-copy{margin-top:155px}.contact-portrait .contact-copy h2{font-size:clamp(90px,15vw,135px)}}
 @media(max-width:540px){.logo{width:51px;height:40px}.about .about-visual-column>.eyebrow{font-size:11px;letter-spacing:1px}.section-motion{font-size:11px;padding:9px 12px}.contact-portrait{min-height:0;padding-top:32px;padding-bottom:40px}.contact-top{align-items:start}.contact-top .eyebrow{font-size:10px;max-width:175px;line-height:1.7;letter-spacing:1.3px}.contact-face{width:110%;height:490px;right:-18%;top:55px;opacity:.75}.contact-copy{margin-top:170px}.contact-invitation{font-size:14px;margin-bottom:22px}.contact-portrait .contact-copy h2{font-size:clamp(84px,22vw,118px)}.contact-summary{font-size:14px;max-width:220px}.contact-details{margin-top:40px;padding-top:24px;gap:25px}.contact-email{gap:12px}.contact-email strong{font-size:clamp(13px,4vw,19px)}.contact-email b{width:38px;height:38px;font-size:21px}.contact-details .social-links a{font-size:13px}.contact-details .social-links{gap:9px}}
 @media(prefers-reduced-motion:reduce){.brand-loader{animation:none}.emblem-float,.contact-face img{transform:none!important;will-change:auto}}
+
+/* Real 3D mesh projected into a viewport-wide gathering particle field. */
+#face-particles{position:fixed;inset:0;width:100vw;height:100vh;z-index:20;pointer-events:none;opacity:0}
+#face-particles[hidden]{display:none}
+.contact-portrait .contact-face{pointer-events:auto;cursor:grab;touch-action:pan-y;mix-blend-mode:normal;perspective:none;z-index:1;right:1%;top:60px;width:58%;height:540px;border-radius:30px}
+.contact-face.is-dragging{cursor:grabbing}.contact-face:focus-visible{outline:1px solid #c292f780;outline-offset:-8px}
+.face-3d-ready .contact-face>img{display:none}
+.face-tools{position:absolute;right:5%;top:614px;width:46%;z-index:25;text-align:center}
+.face-tools [hidden]{display:none!important}
+#face-help{font-size:12px;letter-spacing:.3px;color:#a996ba;line-height:1.5;margin:0 0 12px}
+.face-controls{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.face-controls button{min-width:44px;min-height:44px;padding:10px 14px;border:1px solid #bb8aec45;border-radius:24px;background:#110a1e;color:#d6bcf1;cursor:pointer;font:14px 'DM Sans',sans-serif}
+.face-controls button:hover{background:#402157;border-color:#cf9dff}
+.face-controls button:focus-visible{outline:2px solid #d9b5ff;outline-offset:3px}
+.contact-portrait .contact-copy{opacity:var(--contact-arrival,1);transform:scale(var(--contact-arrival-scale,1));transform-origin:left center}
+#about>.about-visual-column,#about>.about-content{opacity:var(--about-exit-opacity,1);transform:scale(var(--about-exit-scale,1));transform-origin:center bottom}
+#about:focus-within>.about-visual-column,#about:focus-within>.about-content{opacity:1;transform:none}
+.face-credit{position:relative;z-index:25;margin-top:28px;font-size:11px!important;color:#8e7d9f;line-height:1.7}
+.face-credit a{text-decoration:underline;text-underline-offset:3px}
+.face-fallback .face-tools{display:none}
+@media(max-width:1000px){.contact-portrait .contact-face{right:-2%;width:63%;top:85px}.face-tools{right:1%;width:55%;top:645px}}
+@media(max-width:650px){.contact-portrait .contact-face{width:100%;right:0;top:83px;height:400px}.face-tools{position:relative;top:auto;right:auto;width:100%;margin-top:400px}.contact-portrait .contact-copy{margin-top:45px}.contact-portrait .contact-copy h2{font-size:clamp(84px,22vw,118px)}.contact-portrait{padding-top:32px}.face-credit{font-size:10px!important}.face-fallback .contact-copy{margin-top:380px}}
+@media(prefers-reduced-motion:reduce){#about>.about-visual-column,#about>.about-content,.contact-portrait .contact-copy{opacity:1!important;transform:none!important}}

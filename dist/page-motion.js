@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const preference=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const nodes=Array.from(document.querySelectorAll('.work-heading,#about > .eyebrow,#about > div > h2,#about > div > p,#about .skills,#about .resume-block > h3,#about .experience-row,#about .tool-list > div,#about .education > h4,#about .education > p,#contact .contact-top,#contact .contact-copy > *,#contact .contact-details,footer'));
+  const nodes=Array.from(document.querySelectorAll('.work-heading,#about > .eyebrow,#about > div > h2,#about > div > p,#about .skills,#about .resume-block > h3,#about .experience-row,#about .tool-list > div,#about .education > h4,#about .education > p,footer'));
   const reel=document.querySelector('.reel-cards'),stage=document.querySelector('.work-reel-stage'),contact=document.getElementById('contact');
   const clamp=value=>Math.max(0,Math.min(1,value));
   const topOf=element=>{let top=0;for(let node=element;node;node=node.offsetParent)top+=node.offsetTop;return top;};
