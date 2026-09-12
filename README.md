@@ -36,3 +36,18 @@ Repository: https://github.com/Deepaksharma9868/portfolio_version_2
 This folder is connected to that repository as `origin`. All required website files are tracked. After making edits, review them, commit, and run `git push origin main`.
 
 For static hosting, publish the contents of `dist/`; it contains the complete deployable website. Keep the assets directory alongside index.html and retain credits.html and the model license. Original source-assets are useful for editing but are not required by the running website.
+
+## Deploy on Vercel
+
+The root `vercel.json` configures this as a static website and serves `dist/` without installing dependencies or running a build.
+
+1. Import `Deepaksharma9868/portfolio_version_2`, using branch `main`.
+2. Keep **Root Directory** at the repository root (`./`).
+3. Use **Framework Preset: Other**.
+4. **Output Directory:** `dist`.
+5. Leave **Build Command** and **Install Command** empty.
+6. Deploy the latest commit. No environment variables are required.
+
+For an already imported project, check Root Directory in Settings > Build and Deployment, then deploy the newest commit from `main`. Redeploying an older commit will not include the configuration.
+
+Reference: https://vercel.com/docs/builds/configure-a-build
