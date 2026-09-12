@@ -172,3 +172,6 @@ main,section,.about-content,.contact-copy,.contact-details{min-width:0}
  .intro-scene{flex-direction:row;align-items:center;gap:20px}.intro-copy{width:50%}.intro-copy h2{font-size:44px}.intro-copy h2 br{display:block}.intro-copy h2 em{margin-left:0}.intro-abstract{width:48%;height:65svh}.intro-copy .eyebrow{font-size:9px}.intro-copy>p:last-child{font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){.scroll-intro{height:100svh}.intro-sticky{min-height:600px}}
+
+/* Subtle full-site purple particles; never intercept links or gestures. */
+#ambient-particles{position:fixed;inset:0;width:100vw;height:100vh;z-index:12;pointer-events:none;user-select:none}
