@@ -51,3 +51,11 @@ The root `vercel.json` configures this as a static website and serves `dist/` wi
 For an already imported project, check Root Directory in Settings > Build and Deployment, then deploy the newest commit from `main`. Redeploying an older commit will not include the configuration.
 
 Reference: https://vercel.com/docs/builds/configure-a-build
+
+## Vercel Web Analytics
+
+Both HTML pages include Vercel's plain-HTML analytics queue and deferred tracking script at `/_vercel/insights/script.js`. No React component, npm dependency, or build step is required.
+
+Enable Web Analytics in the Vercel project dashboard, deploy, and visit the production site to begin collecting page views. The script endpoint is provided by Vercel after Analytics is enabled and a new deployment is created; it is not a local project file.
+
+Reference: https://vercel.com/docs/analytics/quickstart
