@@ -1,4 +1,4 @@
-# Deepak Sharma - Portfolio
+# Deepak Sharma - Portfolio (portfolio_version_2)
 
 A static portfolio built with HTML, CSS and JavaScript. No package installation or build step is required.
 
@@ -31,6 +31,8 @@ Open http://localhost:8000. Use a local server so the 3D mesh can load via fetch
 
 ## Push to GitHub
 
-Open this entire repository folder in VS Code, then connect it to your own GitHub repository and push. All required website files are tracked. No GitHub repository has been connected by the assistant.
+Repository: https://github.com/Deepaksharma9868/portfolio_version_2
+
+This folder is connected to that repository as `origin`. All required website files are tracked. After making edits, review them, commit, and run `git push origin main`.
 
 For static hosting, publish the contents of `dist/`; it contains the complete deployable website. Keep the assets directory alongside index.html and retain credits.html and the model license. Original source-assets are useful for editing but are not required by the running website.
